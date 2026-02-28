@@ -96,7 +96,7 @@ impl FilterId for [u8] {
     }
 }
 
-impl<'a> FilterId for &'a CStr8 {
+impl FilterId for &CStr8 {
     fn id_from_header(&self, header: &HeaderView) -> Result<Id> {
         header.name_to_id(self)
     }
@@ -1058,7 +1058,7 @@ impl Record {
                     self.inner,
                     tag.as_ptr() as *mut c_char,
                     c_str.as_ptr() as *const ::std::os::raw::c_void,
-                    len as i32,
+                    len,
                     ht as i32,
                 ) == 0
                 {
@@ -1069,7 +1069,7 @@ impl Record {
             }
         }
 
-        if data == &[b""] {
+        if data == [b""] {
             // This is a flag
             let c_str = unsafe { CStr8::from_utf8_with_nul_unchecked(b"\0") };
             let len = 1;
@@ -1079,7 +1079,7 @@ impl Record {
                     self.inner,
                     tag.as_ptr() as *mut c_char,
                     c_str.as_ptr() as *const ::std::os::raw::c_void,
-                    len as i32,
+                    len,
                     ht as i32,
                 ) == 0
                 {
